@@ -1,0 +1,5 @@
+repos:
+-   repo: https://github.com/emerypa/github-actions
+    rev: v1.0
+    hooks:
+    -   id: build_test_job
