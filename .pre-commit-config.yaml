@@ -1,5 +1,10 @@
 repos:
--   repo: https://github.com/emerypa/github-actions
-    rev: v1.1
+  - repo: https://github.com/gruntwork-io/pre-commit
+    rev: v0.1.5
     hooks:
-    -   id: build_test_job
+      - id: terraform-fmt
+      - id: terraform-validate
+      - id: tflint
+      - id: shellcheck
+      - id: gofmt
+      - id: golint
