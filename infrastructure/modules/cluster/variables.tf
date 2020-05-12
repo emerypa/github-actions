@@ -10,17 +10,17 @@ variable log_analytics_workspace_id {}
 
 # Kubernetes Config
 variable agent_count {
-    default = 3
+  default = 3
 }
 
 variable ssh_public_key {
-    default = "~/.ssh/id_rsa.pub"
+  default = "~/.ssh/id_rsa.pub"
 }
 
 variable dns_prefix {
-    default = "kube"
+  default = "kube"
 }
 
 variable cluster_name {
-    default = "kube"
+  default = "kube"
 }

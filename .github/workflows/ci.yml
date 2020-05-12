@@ -11,9 +11,26 @@ jobs:
     name: "Lint JS and TF"
     runs-on: ubuntu-latest
     steps:
-      - name: "Linting JavaScript"
-        run: docker run --rm -v $(pwd):/data -t wata727/tflint
-  build_test_job:
+      - name: "Checking out repo code"
+        uses: actions/checkout@v2
+      # - name: "Linting Terraform"
+      #   run: docker run --rm -v $(pwd)/infrastructure:/data -t wata727/tflint
+      - name: "Linting JS"
+        run: docker run --rm -v $(pwd)/app/src:/data -t patemery/linter
+  build_infrastructure:
+    name: "Initialize and Deploy Infrastructure"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checking out repo code"
+        uses: actions/checkout@v2
+      - name: "Initialize Modules"
+        run: |
+          cd /infrastructure/aks
+          terraform init
+      - name: "Plan & Apply"
+        run: |
+          terraform plan
+  build_test_app:
     name: "Build and test app"
     runs-on: ${{ matrix.os }}
     strategy:
@@ -33,6 +50,7 @@ jobs:
         run: |
           cd app
           npm run test
+
       - name: "Run test coverage"
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
