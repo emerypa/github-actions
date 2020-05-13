@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v2
       # - name: "Linting Terraform"
       #   run: docker run --rm -v $(pwd)/infrastructure:/data -t wata727/tflint
-      - name: "Linting JS"
+      - name: "Linting HTML, CSS, JS"
         run: docker run --rm -v $(pwd)/app/src:/data -t patemery/linter
   build_infrastructure:
     name: "Initialize and Deploy Infrastructure"
