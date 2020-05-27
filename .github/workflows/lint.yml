@@ -1,0 +1,21 @@
+name: lint
+
+on:
+  pull_request:
+    branches:
+      - development
+  push:
+    branches:
+      - development
+
+jobs:
+  run_linter:
+    name: "Lint JS and TF"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checking out repo code"
+        uses: actions/checkout@v2
+      # - name: "Linting Terraform"
+      #   run: docker run --rm -v $(pwd)/infrastructure:/data -t wata727/tflint
+      - name: "Linting HTML, CSS, JS"
+        run: docker run --rm -v $(pwd)/app/src:/src -t patemery/linter

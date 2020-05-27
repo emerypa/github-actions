@@ -1,24 +1,16 @@
+name: test
+
 on:
   pull_request:
     branches:
-      - master
+      - development
   push:
     branches:
-      - master
+      - development
 
 jobs:
-  run_linter:
-    name: "Lint JS and TF"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checking out repo code"
-        uses: actions/checkout@v2
-      # - name: "Linting Terraform"
-      #   run: docker run --rm -v $(pwd)/infrastructure:/data -t wata727/tflint
-      - name: "Linting HTML, CSS, JS"
-        run: docker run --rm -v $(pwd)/app/src:/data -t patemery/linter
   build_infrastructure:
-    name: "Initialize and Deploy Infrastructure"
+    name: "Initialize and Plan Infrastructure"
     runs-on: ubuntu-latest
     steps:
       - name: "Checking out repo code"
@@ -27,11 +19,11 @@ jobs:
         run: |
           cd /infrastructure/aks
           terraform init
-      - name: "Plan & Apply"
+      - name: "Plan Infrastructure"
         run: |
           terraform plan
   build_test_app:
-    name: "Build and test app"
+    name: "Build and Test App"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
