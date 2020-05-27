@@ -21,6 +21,7 @@ jobs:
           terraform init
       - name: "Plan Infrastructure"
         run: |
+          cd infrastructure/aks
           terraform plan
   build_test_app:
     name: "Build and Test App"
