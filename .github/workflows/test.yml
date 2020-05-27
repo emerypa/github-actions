@@ -20,6 +20,9 @@ jobs:
           cd infrastructure/aks
           terraform init
       - name: "Plan Infrastructure"
+        uses: azure/login@v1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
         env:
           TF_VAR_client_id: ${{ secrets.TF_VAR_client_id }}
           TF_VAR_client_secret: ${{ secrets.TF_VAR_client_secret }}
