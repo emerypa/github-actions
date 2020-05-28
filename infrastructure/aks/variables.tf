@@ -4,7 +4,7 @@ variable client_secret {}
 variable subscription_id {}
 
 variable resource_group_name {
-  default = "azure-api"
+  default = "azure-k8s"
 }
 
 variable resource_group_location {
