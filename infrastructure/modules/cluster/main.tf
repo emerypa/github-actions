@@ -4,14 +4,6 @@ resource azurerm_kubernetes_cluster cluster {
   resource_group_name = var.resource_group_name
   dns_prefix          = var.dns_prefix
 
-  linux_profile {
-    admin_username = "ubuntu"
-
-    ssh_key {
-      key_data = file(var.ssh_public_key)
-    }
-  }
-
   default_node_pool {
     name       = "agentpool"
     node_count = var.agent_count
