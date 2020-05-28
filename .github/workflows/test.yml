@@ -62,7 +62,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          $coverage_result = npm run coverage
+          $coverage_result = npm run test
           $start = $false;
           $middle = $false; 
           $end = $false; 
