@@ -14,6 +14,8 @@ function Layout({ children }) {
   const { loggedUser } = useLoggedUser();
   const history = useHistory();
 
+  const ALLOW_FAKE_LOGIN = 'active'
+
   const leftItems = [
     {
       id: 'header-title',
@@ -23,7 +25,7 @@ function Layout({ children }) {
 
   const signinSubItems = [];
 
-  if (process.env.REACT_APP_ALLOW_FAKE_LOGIN === 'active') {
+  if (ALLOW_FAKE_LOGIN === 'active') {
     signinSubItems.push({
       label: 'Sign out and fake sign in', // For testing only -- no need to localize
       action: () => history.push('/fake-login'),

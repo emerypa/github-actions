@@ -35,7 +35,7 @@ function AppInContextAndRouter() {
   // The following example illustrates the redirect journey:
   // (app/user-page -> app/oidc-login -> azure authorize -> app/oidc-login/callback -> app/user-page)
   if (
-    !loggedUser &&
+    loggedUser &&
     location.pathname !== '/oidc-login' &&
     location.pathname !== '/oidc-login/callback' &&
     location.pathname !== '/oidc-logout' &&

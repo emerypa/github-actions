@@ -7,6 +7,12 @@ const ORIGINAL_PATH_KEY = 'ORIGINAL_PATH';
 const OAUTH_STATE_KEY = 'OAUTH_STATE';
 const OAUTH_VERIFIER_KEY = 'OAUTH_VERIFIER';
 
+const ALLOW_FAKE_LOGIN = "active"
+const BASE_URI = "http://localhost:8080"
+const AUTH_TENANT_ID = "5d3e2773-e07f-4432-a630-1a0f68a28a05"
+const AUTH_CLIENT_ID = "83f761bc-dc02-441d-b5ee-3f652cfae1e6"
+const AUTH_SCOPE = "openid profile email"
+
 export const storeOriginalPath = (location) => {
   // Note that this requires setting "state" prop in the Redirect component (see App component)
   const originalPath =
@@ -57,11 +63,10 @@ export const getAndClearStoredOAuthVerifier = () => {
 };
 
 export const getOAuthAuthorizeUri = (state, challenge) => {
-  const tenantId = encodeURIComponent(process.env.REACT_APP_AUTH_TENANT_ID);
-  const clientId = encodeURIComponent(process.env.REACT_APP_AUTH_CLIENT_ID);
-  const redirectUri = encodeURIComponent(`${process.env.REACT_APP_BASE_URI}/oidc-login/callback`);
-  const scope = encodeURIComponent(process.env.REACT_APP_AUTH_SCOPE);
-
+  const tenantId = encodeURIComponent(AUTH_TENANT_ID);
+  const clientId = encodeURIComponent(AUTH_CLIENT_ID);
+  const redirectUri = encodeURIComponent(`${BASE_URI}/oidc-login/callback`);
+  const scope = encodeURIComponent(AUTH_SCOPE);
   return (
     'https://login.microsoftonline.com/' +
     `${tenantId}` +
@@ -78,10 +83,10 @@ export const getOAuthAuthorizeUri = (state, challenge) => {
 };
 
 export const fetchAndDecodeOAuthTokens = async (code, verifier) => {
-  const tenantId = encodeURIComponent(process.env.REACT_APP_AUTH_TENANT_ID);
-  const clientId = encodeURIComponent(process.env.REACT_APP_AUTH_CLIENT_ID);
-  const redirectUri = encodeURIComponent(`${process.env.REACT_APP_BASE_URI}/oidc-login/callback`);
-  const scope = encodeURIComponent(process.env.REACT_APP_AUTH_SCOPE);
+  const tenantId = encodeURIComponent(AUTH_TENANT_ID);
+  const clientId = encodeURIComponent(AUTH_CLIENT_ID);
+  const redirectUri = encodeURIComponent(`${BASE_URI}/oidc-login/callback`);
+  const scope = encodeURIComponent(AUTH_SCOPE);
 
   const oauthTokenUri = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
   const method = 'POST';
@@ -113,8 +118,8 @@ export const fetchAndDecodeOAuthTokens = async (code, verifier) => {
 };
 
 export const getOAuthSignoutUri = () => {
-  const tenantId = encodeURIComponent(process.env.REACT_APP_AUTH_TENANT_ID);
-  const postLogoutRedirectUri = encodeURIComponent(process.env.REACT_APP_BASE_URI);
+  const tenantId = encodeURIComponent(AUTH_TENANT_ID);
+  const postLogoutRedirectUri = encodeURIComponent(BASE_URI);
 
   return (
     'https://login.microsoftonline.com/' +
