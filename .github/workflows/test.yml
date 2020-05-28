@@ -1,0 +1,88 @@
+name: test
+
+on:
+  pull_request:
+    branches:
+      - development
+  push:
+    branches:
+      - development
+
+jobs:
+  build_infrastructure:
+    name: "Initialize and Plan Infrastructure"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checking out repo code"
+        uses: actions/checkout@v2
+
+      - name: "Initialize Modules"
+        run: |
+          cd infrastructure/aks
+          terraform init
+
+      - name: "Logging into Azure"
+        uses: azure/login@v1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "Plan Infrastructure"
+        id: plan
+        env:
+          TF_VAR_client_id: ${{ secrets.TF_VAR_client_id }}
+          TF_VAR_client_secret: ${{ secrets.TF_VAR_client_secret }}
+          TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
+          TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd infrastructure/aks
+          terraform plan
+
+      - uses: actions/github-script@0.9.0
+        if: github.event_name == 'pull_request'
+        env:
+          PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
+            #### Terraform Validation 🤖${{ steps.validate.outputs.stdout }}
+            #### Terraform Plan 📖\`${{ steps.plan.outcome }}\`
+
+            <details><summary>Show Plan</summary>
+
+            \`\`\`${process.env.PLAN}\`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+              
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            })
+
+  build_test_app:
+    name: "Build and Test App"
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: "Checking out repo code"
+        uses: actions/checkout@v2
+
+      - name: "Validate build"
+        run: |
+          cd app
+          npm install
+          npm run build
+
+      - name: "Run tests"
+        run: |
+          cd app
+          npm run test

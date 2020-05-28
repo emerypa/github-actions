@@ -3,7 +3,6 @@ repos:
     rev: v0.1.5
     hooks:
       - id: terraform-fmt
-      - id: terraform-validate
       - id: tflint
       - id: shellcheck
       - id: gofmt
