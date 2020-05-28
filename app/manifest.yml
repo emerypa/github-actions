@@ -1,0 +1,7 @@
+---
+applications:
+# - name: <your-app-name>
+  buildpacks:
+  - staticfile_buildpack
+  memory: 64M
+  path: build
