@@ -32,9 +32,36 @@ jobs:
           TF_VAR_client_secret: ${{ secrets.TF_VAR_client_secret }}
           TF_VAR_subscription_id: ${{ secrets.TF_VAR_subscription_id }}
           TF_VAR_tenant_id: ${{ secrets.TF_VAR_tenant_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd infrastructure/aks
-          terraform plan
+          $terraform_plan = terraform plan
+          $start = $false;
+          $middle = $false; 
+          $end = $false; 
+          $count = 0; 
+          foreach ($j in $terraform_plan) { 
+            if (!$start) {
+              $start = $true;
+              $start_index = $count 
+            } elseif (!$middle) {
+              $middle = $true;
+              $middle_index = $count 
+            } elseif (!$end) {
+              $end = $true; 
+              $end_index = $count 
+            } 
+            $count++
+          }
+          $tbl_md = $terraform_plan[($start_index+1)..($end_index-1)] -join "\n"
+          $summary = $terraform_plan[($end_index + 1)..$count] -join "\n"
+          $comment = $tbl_md + "\n" + $summary
+          $url = "https://api.github.com/repos/${env:GITHUB_REPOSITORY}/issues/${env:PR_NUMBER}/comments"
+          $headers = @{
+            "Authorization" = "token ${env:GITHUB_TOKEN}"
+          }
+          Invoke-RestMethod -Method POST -Uri $url -Headers $headers -Body "{ `"body`": `"${comment}`" }"
 
   build_test_app:
     name: "Build and Test App"
@@ -56,44 +83,3 @@ jobs:
         run: |
           cd app
           npm run test
-
-      - name: "Run test coverage"
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          $coverage_result = npm run test
-          $start = $false;
-          $middle = $false; 
-          $end = $false; 
-          $count = 0; 
-          foreach ($j in $coverage_result) 
-          { 
-            if ($j.tostring().startswith("--------------")) 
-            { 
-                  if (!$start) 
-                  { 
-                      $start = $true;
-                      $start_index = $count 
-                  } 
-                  elseif (!$middle) 
-                  {
-                      $middle = $true; 
-                      $middle_index = $count 
-                  } 
-                  elseif (!$end) 
-                  { 
-                      $end = $true; 
-                      $end_index = $count 
-                  } 
-            }
-            $count++
-          }
-          $tbl_md = $coverage_result[($start_index+1)..($end_index-1)] -join "\n"
-          $summary = $coverage_result[($end_index + 1)..$count] -join "\n"
-          $comment = $tbl_md + "\n" + $summary
-          $url = "https://api.github.com/repos/${env:GITHUB_REPOSITORY}/issues/${env:PR_NUMBER}/comments"
-          $headers = @{
-            "Authorization" = "token ${env:GITHUB_TOKEN}"
-          }
-          Invoke-RestMethod -Method POST -Uri $url -Headers $headers -Body "{ `"body`": `"${comment}`" }"
