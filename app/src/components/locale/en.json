@@ -1,9 +1,0 @@
-{
-	"LOCALE_App_Title": "My Awesome Application",
-	"LOCALE_Redirecting_Azure": "Redirecting to Microsoft Azure...",
-	"LOCALE_Completing_Login": "Please wait while we complete your sign in...",
-	"LOCALE_Logout_From_Azure": "Sign out from Azure AD",
-	"LOCALE_Error_Return_Home_Page": "Error :( Click here to return to the home page or contact your system administrator.",
-	"LOCALE_Home_Page": "Welcome to the Home Page!",
-	"LOCALE_Not_Found_Page": "Page Not Found :("
-}
