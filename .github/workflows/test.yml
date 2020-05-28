@@ -27,6 +27,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: "Plan Infrastructure"
+        id: plan
         env:
           TF_VAR_client_id: ${{ secrets.TF_VAR_client_id }}
           TF_VAR_client_secret: ${{ secrets.TF_VAR_client_secret }}
